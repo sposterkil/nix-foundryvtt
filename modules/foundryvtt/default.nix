@@ -95,6 +95,14 @@ in
         '';
       };
 
+      dataDirMode = mkOption {
+        type = types.str;
+        default = "0750";
+        description = ''
+          Octal permissions for `dataDir`.
+        '';
+      };
+
       language = mkOption {
         type = types.str;
         default = "en.core";
@@ -236,7 +244,7 @@ in
           Restart = "always";
           ExecStart = "${lib.getBin cfg.package}/bin/foundryvtt --headless --noupdate --dataPath=\"${cfg.dataDir}\"";
           StateDirectory = "foundryvtt";
-          StateDirectoryMode = "0750";
+          StateDirectoryMode = cfg.dataDirMode;
 
           # Hardening
           CapabilityBoundingSet = [
@@ -283,7 +291,7 @@ in
 
         preStart = ''
           installedConfigFile="${cfg.dataDir}/Config/options.json"
-          install -d -m750 ${cfg.dataDir}/Config
+          install -d -m${cfg.dataDirMode} ${cfg.dataDir}/Config
           rm -f "$installedConfigFile" && install -m640 ${configFile} "$installedConfigFile"
         '';
       };
@@ -292,7 +300,7 @@ in
       systemd.services.foundryvtt.serviceConfig.ReadWritePaths = [ cfg.dataDir ];
       systemd.tmpfiles.settings = {
         "10-foundryvtt"."${cfg.dataDir}".d = {
-          mode = "0750";
+          mode = cfg.dataDirMode;
           user = "foundryvtt";
           group = "foundryvtt";
         };
