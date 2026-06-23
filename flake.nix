@@ -29,7 +29,10 @@
       packages = forAllSystems (
         system:
         let
-          pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
           mkFoundry = attrs: (pkgs.callPackage ./pkgs/foundryvtt { }).overrideAttrs (old: old // attrs);
         in
         {
