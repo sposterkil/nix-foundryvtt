@@ -348,7 +348,7 @@ stdenv.mkDerivation (
     meta = {
       homepage = "https://foundryvtt.com";
       description = "A self-hosted, modern, and developer-friendly roleplaying platform.";
-      #license = lib.licenses.unfree;
+      license = lib.licenses.mit;
       platforms = lib.lists.intersectLists nodejs.meta.platforms openssl.meta.platforms;
     };
   }
